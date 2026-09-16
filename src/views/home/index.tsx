@@ -8,9 +8,11 @@ import { ActionButton, IpText, Pending } from "@/components/toolkit";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { UnderlineHover } from "@/components/underline-hover";
+import { useAvailableTools } from "@/hooks/use-available-tools";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSortAnimation } from "@/hooks/use-sort-animation";
 import { t } from "@/i18n";
+import { toolGroups } from "@/layout/routes";
 import { companyTypeColors } from "@/lib/ip-badge-colors";
 import { ipScoreColor } from "@/lib/ip-score";
 import { BrowserSummary } from "@/views/browser/summary";
@@ -20,10 +22,12 @@ import { useQueries, useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
   ArrowRight,
+  Crown,
   Fingerprint,
   Network,
   Search,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 import { getGeo, getBrowserIp, getDomesticIp } from "./api";
 import { PlatformSummary } from "./platform-summary";
@@ -31,6 +35,21 @@ import { SplitResults } from "./split-results";
 
 export function HomePage() {
   const mobile = useIsMobile();
+  const browserTools = useAvailableTools("browser");
+  const navigationGroups = [
+    { label: t("网络检测"), icon: Network, tools: toolGroups.network },
+    { label: t("浏览器检测"), icon: Fingerprint, tools: browserTools },
+    { label: t("AI 检测"), icon: Sparkles, tools: toolGroups.ai },
+    {
+      label: t("服务状态"),
+      icon: Activity,
+      tools: [
+        { path: "/status/", label: t("全部服务") },
+        { path: "/status/openai", label: "OpenAI" },
+        { path: "/status/claude", label: "Claude" },
+      ],
+    },
+  ];
   const client = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const refresh = async () => {
@@ -222,7 +241,10 @@ export function HomePage() {
           const loading =
             pending || Boolean(data && geoByIp.get(data.ip)?.isPending);
           return (
-            <Card key={index} className="home-primary-card relative">
+            <Card
+              key={index}
+              className={`home-primary-card relative${score === 100 ? " ip-dossier-perfect" : ""}`}
+            >
               {data && (
                 <Link
                   to={`/network/ip/${encodeURIComponent(data.ip)}`}
@@ -263,10 +285,19 @@ export function HomePage() {
                   </div>
                   {hasScore && (
                     <div
-                      className="ip-reputation-badge shrink-0"
+                      className={`ip-reputation-badge shrink-0${score === 100 ? " ip-reputation-perfect" : ""}`}
                       style={{ color: ipScoreColor(score) }}
                     >
-                      <span>{t("IP 信誉分")}</span>
+                      <span
+                        className={
+                          score === 100 ? "ip-perfect-label" : undefined
+                        }
+                      >
+                        {score === 100 && (
+                          <Crown size={13} aria-hidden="true" />
+                        )}
+                        {score === 100 ? t("满分信誉") : t("IP 信誉分")}
+                      </span>
                       <strong>
                         <NumberTicker value={score} />
                       </strong>
@@ -402,6 +433,42 @@ export function HomePage() {
               </Link>
             ))}
           </div>
+        </CardContent>
+      </Card>
+      <Card className="home-tool-directory">
+        <CardHeader>
+          <div className="row-between">
+            <CardTitle id="home-tool-directory-title">
+              {t("全部功能")}
+            </CardTitle>
+            <UnderlineHover asChild>
+              <Link className="small muted" to="/docs/api">
+                {t("API 文档")}
+              </Link>
+            </UnderlineHover>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <nav
+            aria-labelledby="home-tool-directory-title"
+            className="tool-directory-groups"
+          >
+            {navigationGroups.map((group) => (
+              <section className="tool-directory-group" key={group.label}>
+                <h3 className="tool-directory-heading">
+                  <group.icon aria-hidden="true" />
+                  {group.label}
+                </h3>
+                <ul className="tool-directory-links">
+                  {group.tools.map((tool) => (
+                    <li key={tool.path}>
+                      <Link to={tool.path}>{tool.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </nav>
         </CardContent>
       </Card>
     </div>

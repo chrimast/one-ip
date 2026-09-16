@@ -10,6 +10,7 @@ import { ipType } from "./ip-type.js";
 import { startPing, pingResult, pingNodes } from "./ping.js";
 import { normalizeStatus } from "./service-status.js";
 import services from "./services.json";
+import { lookupSubdomains } from "./subdomains.js";
 import { tlsFingerprint } from "./tls-fingerprint.js";
 import { lookupRegistration } from "./whois.js";
 
@@ -96,6 +97,8 @@ export default {
               : undefined,
         });
       }
+      if (path.startsWith("/subdomains/"))
+        return json(await lookupSubdomains(decodeURIComponent(path.slice(12))));
       if (path.startsWith("/whois/lookup/"))
         return json(
           await lookupRegistration(decodeURIComponent(path.slice(14))),

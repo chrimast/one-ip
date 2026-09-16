@@ -12,6 +12,7 @@ import { ArrowUpRight } from "lucide-react";
 
 const descriptions: Record<string, string> = {
   "/network/ip": t("查询归属地、运营商、ASN 和地图位置"),
+  "/network/subdomains": t("查询证书透明度日志中记录的子域名"),
   "/network/whois": t("查看域名、IP 和 AS 注册资料"),
   "/network/connectivity": t("检测网站连通性和访问延迟"),
   "/network/exits": t("核对网站分流出口和地图位置"),

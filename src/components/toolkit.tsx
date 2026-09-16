@@ -72,14 +72,14 @@ export function IpText({ ip, link = true }: { ip?: string; link?: boolean }) {
     <UnderlineHover asChild>
       <Link className="ip-text" to={`/network/ip/${encodeURIComponent(ip)}`}>
         <AnimatedValue value={text}>
-          <CompactText text={text} middle />
+          <CompactText text={text} middle tooltip={false} />
         </AnimatedValue>
       </Link>
     </UnderlineHover>
   ) : (
     <span className="ip-text">
       <AnimatedValue value={text}>
-        <CompactText text={text} middle />
+        <CompactText text={text} middle tooltip={false} />
       </AnimatedValue>
     </span>
   );

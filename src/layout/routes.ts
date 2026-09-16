@@ -15,6 +15,7 @@ export const toolGroups = {
     { path: "/network/dns", label: t("DNS 出口") },
     { path: "/network/cdn", label: t("CDN 节点") },
     { path: "/network/ip", label: t("IP 检测") },
+    { path: "/network/subdomains", label: t("子域名查询") },
     { path: "/network/whois", label: "WHOIS" },
     { path: "/network/ping", label: t("全球 Ping") },
   ],

@@ -31,7 +31,6 @@ const ClaudeStatusPage = lazy(() => import("@/views/claude/status"));
 const GptStatusPage = lazy(() => import("@/views/gpt/status"));
 const CdnPage = lazy(() => import("@/views/cdn"));
 const DnsExitPage = lazy(() => import("@/views/dns-exit"));
-const ApiUsagePage = lazy(() => import("@/views/api-usage"));
 const PolicyPage = lazy(() => import("@/views/policy"));
 function Redirect({ to }: { to: string }) {
   const { search, hash } = useLocation();
@@ -53,7 +52,6 @@ export function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="docs/api" element={<ApiUsagePage />} />
         <Route path="terms" element={<PolicyPage page="terms" />} />
         <Route path="privacy" element={<PolicyPage page="privacy" />} />
         <Route path="lookup" element={<ToolLayout />}>
@@ -123,7 +121,7 @@ export function App() {
         <Route
           path="*"
           element={
-            <section className="status-line">
+            <section className="py-5 text-center text-[0.88rem] leading-[1.8] text-muted-foreground">
               <h1>{t("navigation.pageNotFound")}</h1>
               <Button variant="outline" asChild>
                 <Link to="/">{t("navigation.backToOverview")}</Link>
